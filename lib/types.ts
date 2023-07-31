@@ -5,13 +5,6 @@ export type Company = {
   website: string;
 };
 
-export type ValuationEvent = {
-  id: string;
-  date: string;
-  numberOfShares: string;
-  pricePerShare: string;
-};
-
 export type Investment = {
   id: string;
   date: string;
@@ -19,4 +12,15 @@ export type Investment = {
   companyId: string;
   company: Company;
   valuationEvents: ValuationEvent[];
+};
+
+export type ValuationEvent = {
+  id: string;
+  date: string;
+  numberOfShares: string;
+  pricePerShare: string;
+  companyId?: string;
+  company?: Company;
+  investmentId?: string;
+  investment?: Investment;
 };

@@ -45,18 +45,18 @@ const InvestmentCard = ({
             <dt className="text-gray-500">Blended value</dt>
             <dd className="text-gray-700">
               <div className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                {formatCurrency(amountInvested * 3)} (x3)
+                {formatCurrency(amountInvested * 1.5)} (x1.5)
               </div>
             </dd>
           </div>
-          <div className="flex justify-between gap-x-4 py-3">
+          {/* <div className="flex justify-between gap-x-4 py-3">
             <dt className="text-gray-500">Unrealized value</dt>
             <dd className="text-gray-700">
               <div className="rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">
                 {formatCurrency(0)}
               </div>
             </dd>
-          </div>
+          </div> */}
         </dl>
       </li>
     </Link>

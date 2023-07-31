@@ -1,7 +1,6 @@
 import Filters from './filters';
 import Heading from './heading';
 import InvestmentsList from './investments-list';
-
 import { Investment } from '../../lib/types';
 import { investments as investmentsSeed } from '../../lib/data';
 import CreateInvestmentModal from './create-investment-modal';

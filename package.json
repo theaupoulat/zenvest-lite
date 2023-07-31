@@ -8,7 +8,9 @@
     "prettier": "prettier --write \"{app,components,lib}/**/*.{ts,tsx}\"",
     "tsc": "tsc --noEmit",
     "dev": "next dev",
-    "build": "next build"
+    "build": "next build",
+    "prisma": "prisma",
+    "seed": "ts-node prisma/seed.ts"
   },
   "prettier": {
     "printWidth": 100,
@@ -21,6 +23,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
+    "@prisma/client": "5.0.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
@@ -47,6 +50,7 @@
     "postcss": "^8.4.27",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
+    "prisma": "^5.0.0",
     "tailwindcss": "^3.3.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"

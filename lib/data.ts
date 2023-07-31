@@ -2,34 +2,34 @@ import { Company, Investment } from './types';
 
 export const companies: Company[] = [
   {
-    id: 'swan',
+    id: '1',
     name: 'Swan',
     description: 'The easiest way to embed banking features into your product.',
     website: 'https://www.swan.io/',
   },
   {
-    id: 'hexa',
+    id: '2',
     name: 'Hexa',
     description:
       "Hexa is home to startup studios eFounders, Logic Founders and 3founders. We're on a mission to democratize a new way for entrepreneurship.",
     website: 'https://www.hexa.cc/',
   },
   {
-    id: 'upflow',
+    id: '3',
     name: 'Upflow',
     description:
       'Stop wasting time and automate customer payments reminders. With Upflow, businesses quickly collect unpaid invoices and reduce overdue payments by 50%',
     website: 'https://upflow.io/',
   },
   {
-    id: 'equify',
+    id: '4',
     name: 'Equify',
     description:
       'Equify centralizes all the legal and financial information of your shareholders. With Equify, take back control of your capitalization table.',
     website: 'https://www.equify.eu/',
   },
   {
-    id: 'cycle',
+    id: '5',
     name: 'Cycle',
     description:
       'Cycle is a product feedback system that lets you connect the dots between customer needs and product delivery workflows.',
