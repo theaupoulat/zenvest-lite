@@ -1,0 +1,54 @@
+{
+  "name": "zenvest-lite",
+  "version": "0.1.0",
+  "description": "Zenvest Lite",
+  "license": "ISC",
+  "scripts": {
+    "lint": "next lint",
+    "prettier": "prettier --write \"{app,components,lib}/**/*.{ts,tsx}\"",
+    "tsc": "tsc --noEmit",
+    "dev": "next dev",
+    "build": "next build"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.16",
+    "@heroicons/react": "^2.0.18",
+    "clsx": "^1.2.1",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
+    "lodash": "^4.17.21",
+    "next": "^13.4.12",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "slugify": "^1.6.6",
+    "usehooks-ts": "^2.9.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.4",
+    "@types/lodash": "^4.14.196",
+    "@types/node": "^20.4.5",
+    "@types/react": "^18.2.17",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "autoprefixer": "^10.4.14",
+    "eslint": "^8.46.0",
+    "eslint-config-next": "^13.4.12",
+    "eslint-config-prettier": "^8.9.0",
+    "postcss": "^8.4.27",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "tailwindcss": "^3.3.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}
