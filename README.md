@@ -24,12 +24,12 @@ You will use the same stack as Zenvest: TypeScript, Node.js, Prisma, PostgreSQL,
 
 ### Bonus:
 
-- Implement signup and login to authenticate users. (they can't have access to the portfolio until signed up and logged in).
+- Implement sign-up and login to authenticate users. (they can't have access to the portfolio until signed up and logged in).
 - Add filters feature on the list of investments by company and investment year, add another filter on the investment detailed view by event type.
 
 ## Getting started
 
-To bootstrap a prototype quickly and keep things simple, you will use [Next.js](https://nextjs.org/) alongside [Prisma](https://www.prisma.io/) to create the backend. The database schema is located in prisma/schema.prisma
+To bootstrap a prototype quickly and keep things simple, you will use [Next.js](https://nextjs.org/) alongside [Prisma](https://www.prisma.io/) to create the backend. You should fork this repository and proceed with implementing the user stories. The database schema is located in prisma/schema.prisma.
 
 You may follow the instructions given [here](https://vercel.com/guides/nextjs-prisma-postgres), you can also check relevant Prisma examples.
 
