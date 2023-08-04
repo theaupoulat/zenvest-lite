@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, useRef, useTransition } from 'react';
+import { Fragment, useRef, useState, useTransition } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
@@ -7,13 +7,14 @@ import useContext from '../lib/context/hook';
 import { createInvestment } from '../../lib/actions';
 import { Company } from '@prisma/client';
 
-const CreateInvestmentModal = ({companies} : {companies: Company[]}) => {
+const CreateInvestmentModal = ({ companies }: { companies: Company[] }) => {
   const {
     state: { createInvestmentModalOpen },
     closeCreateInvestmentModal,
   } = useContext();
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const [isPending, startTransition] = useTransition();
+  const [formError, setFormError] = useState<string | null>(null);
   return (
     <Transition.Root show={createInvestmentModalOpen} as={Fragment}>
       <Dialog
@@ -59,19 +60,32 @@ const CreateInvestmentModal = ({companies} : {companies: Company[]}) => {
                       </p>
                     </div>
                   </div>
+                  {formError && (
+                    <div className=" sm:mt-5">
+                      <Dialog.Description className="text-sm font-semibold leading-6 text-red-500">
+                        Errors while submitting the form: {formError}
+                      </Dialog.Description>
+                    </div>
+                  )}
                 </div>
                 <form
                   id="create-investment-form"
                   className="space-y-6"
                   onSubmit={async (event) => {
                     event.preventDefault();
-                    startTransition(() =>
-                      createInvestment(new FormData(event.target as HTMLFormElement)),
-                    );
-                    closeCreateInvestmentModal();
+                    startTransition(async () => {
+                      try {
+                        await createInvestment(
+                          new FormData(event.target as HTMLFormElement),
+                        ).catch();
+                        closeCreateInvestmentModal();
+                      } catch (error: any) {
+                        setFormError(error.message);
+                      }
+                    });
                   }}
                 >
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-6">
                       <label
                         htmlFor="company"
@@ -180,6 +194,7 @@ const CreateInvestmentModal = ({companies} : {companies: Company[]}) => {
                           name="date"
                           type="date"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          required
                         />
                       </div>
                     </div>

@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, useRef, useTransition } from 'react';
+import { Fragment, useRef, useState, useTransition } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
@@ -14,6 +14,7 @@ const CreateValuationEventModal = ({ company }: { company: Company }) => {
   } = useContext();
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const [isPending, startTransition] = useTransition();
+  const [formError, setFormError] = useState<string | null>(null);
   return (
     <Transition.Root show={createValuationEventModalOpen} as={Fragment}>
       <Dialog
@@ -59,16 +60,32 @@ const CreateValuationEventModal = ({ company }: { company: Company }) => {
                       </p>
                     </div>
                   </div>
+
+                  {formError && (
+                    <div className=" sm:mt-5">
+                    <Dialog.Description
+                      className="text-sm font-semibold leading-6 text-red-500"
+                    >
+                      Errors while submitting the form: {formError}
+                    </Dialog.Description>
+                  </div>
+                  
+                  )}
                 </div>
                 <form
                   id="create-valuation-event-form"
                   className="space-y-6"
                   onSubmit={async (event) => {
                     event.preventDefault();
-                    startTransition(() =>
-                      createValuationEvent(new FormData(event.target as HTMLFormElement), company.id),
+                    startTransition(async () => {
+                      try {
+                        await createValuationEvent(new FormData(event.target as HTMLFormElement), company.id)
+                        closeCreateValuationEventModal();
+                      } catch (error: any) {
+                        setFormError(error?.message)
+                      }
+                    }
                     );
-                    closeCreateValuationEventModal();
                   }}
                 >
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -114,6 +131,7 @@ const CreateValuationEventModal = ({ company }: { company: Company }) => {
                           name="date"
                           id="date"
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          required
                         />
                       </div>
                     </div>

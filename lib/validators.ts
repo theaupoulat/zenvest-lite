@@ -35,8 +35,9 @@ export const validateAndBuildCreateInvestmentObject = (formData: FormData): NewI
   }
 
   if (amount !== pricePerShare * numberOfShares) {
-    debugger;
-    throw new Error('Amount does not match price per share * number of shares');
+    throw new Error(
+      'Price per share multiplied by the number of shares should match how much you invested',
+    );
   }
 
   investment.amount = String(amount);
@@ -89,6 +90,10 @@ export const validateAndBuildCreateValuationObject = (
 
   if (!pricePerShare) {
     throw new Error('Price per share is required');
+  }
+
+  if (pricePerShare < 0) {
+    throw new Error('Price per share must be greater than 0');
   }
 
   valuationEvent.pricePerShare = String(pricePerShare);
