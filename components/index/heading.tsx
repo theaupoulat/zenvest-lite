@@ -1,14 +1,14 @@
 import { uniqBy } from 'lodash';
 
-import { Investment } from '../../lib/types';
 import SearchFilter from './search-filter';
 import CreateInvestmentButton from './create-investment-button';
+import { InvestmentWithCompanyAndValuationEvents } from '../../lib/queries';
 
-const Heading = ({ investments }: { investments: Investment[] }) => {
-  const companies = uniqBy(
+const Heading = ({ investments }: { investments: InvestmentWithCompanyAndValuationEvents[] }) => {
+  const companies = investments?.length > 0 ? uniqBy(
     investments.map(({ company }) => company),
     'id',
-  );
+  ) : [];
   return (
     <div className="overflow-hidden rounded-lg bg-white shadow">
       <div className="flex items-center gap-x-8 px-4 py-5 sm:p-6">

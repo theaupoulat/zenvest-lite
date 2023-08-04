@@ -1,15 +1,14 @@
 import Filters from './filters';
 import Heading from './heading';
 import InvestmentsList from './investments-list';
-import { Investment } from '../../lib/types';
-import { investments as investmentsSeed } from '../../lib/data';
 import CreateInvestmentModal from './create-investment-modal';
-
-const fetchInvestments = (): Promise<Investment[]> =>
-  new Promise((resolve) => setTimeout(() => resolve(investmentsSeed), 100));
+import { fetchCompanies, fetchInvestments } from '../../lib/queries';
 
 const Index = async () => {
-  const investments = await fetchInvestments();
+  const investments = await fetchInvestments()
+
+  const companies = await fetchCompanies()
+
   return (
     <div>
       <div className="hidden pt-16 lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
@@ -19,9 +18,10 @@ const Index = async () => {
         <Heading investments={investments} />
         <InvestmentsList investments={investments} />
       </main>
-      <CreateInvestmentModal />
+      <CreateInvestmentModal companies={companies} />
     </div>
   );
 };
+
 
 export default Index;

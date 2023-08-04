@@ -5,9 +5,9 @@ import clsx from 'clsx';
 
 import useContext from '../lib/context/hook';
 import { createInvestment } from '../../lib/actions';
-import { companies } from '../../lib/data';
+import { Company } from '@prisma/client';
 
-const CreateInvestmentModal = () => {
+const CreateInvestmentModal = ({companies} : {companies: Company[]}) => {
   const {
     state: { createInvestmentModalOpen },
     closeCreateInvestmentModal,

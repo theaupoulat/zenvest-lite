@@ -2,20 +2,21 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { groupBy } from 'lodash';
 
-import { Company, Investment } from '../../lib/types';
-import { formatCurrency } from '../../lib/utils';
+import { Investment } from '../../lib/types';
+import { calculateBlendedValue, calculateTotalInvested, formatCurrency } from '../../lib/utils';
+import { InvestmentWithCompanyAndValuationEvents } from '../../lib/queries';
 
-const InvestmentCard = ({
+const InvestmentCard = async ({
   company,
   investments,
 }: {
-  company: Company;
-  investments: Investment[];
+  company: InvestmentWithCompanyAndValuationEvents['company'];
+  investments: InvestmentWithCompanyAndValuationEvents[];
 }) => {
-  const amountInvested = investments.reduce<number>(
-    (result, investment) => result + Number(investment.amount),
-    0,
-  );
+  const amountInvested = calculateTotalInvested(investments as Investment[]);
+  const blendedValue = await calculateBlendedValue(investments as Investment[]);
+  const multiple = blendedValue / amountInvested;
+  const multipleColor = multiple >= 1 ? "green" : "red"
   return (
     <Link href={`/portfolio/${company.id}`}>
       <li className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -44,26 +45,18 @@ const InvestmentCard = ({
           <div className="flex justify-between gap-x-4 py-3">
             <dt className="text-gray-500">Blended value</dt>
             <dd className="text-gray-700">
-              <div className="rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                {formatCurrency(amountInvested * 1.5)} (x1.5)
+              <div className={`rounded-md bg-${multipleColor}-50 px-2 py-1 text-xs font-medium text-${multipleColor}-700 ring-1 ring-inset ring-${multipleColor}-600/20`}>
+                {formatCurrency(blendedValue)} ({multiple.toFixed(1)})
               </div>
             </dd>
           </div>
-          {/* <div className="flex justify-between gap-x-4 py-3">
-            <dt className="text-gray-500">Unrealized value</dt>
-            <dd className="text-gray-700">
-              <div className="rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10">
-                {formatCurrency(0)}
-              </div>
-            </dd>
-          </div> */}
         </dl>
       </li>
     </Link>
   );
 };
 
-const InvestmentsList = ({ investments }: { investments: Investment[] }) => {
+const InvestmentsList = ({ investments }: { investments: InvestmentWithCompanyAndValuationEvents[] }) => {
   const investmentsByCompany = groupBy(investments, 'companyId');
   return (
     <ul role="list" className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8">

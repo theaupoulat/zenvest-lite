@@ -66,7 +66,7 @@ const CreateValuationEventModal = ({ company }: { company: Company }) => {
                   onSubmit={async (event) => {
                     event.preventDefault();
                     startTransition(() =>
-                      createValuationEvent(new FormData(event.target as HTMLFormElement)),
+                      createValuationEvent(new FormData(event.target as HTMLFormElement), company.id),
                     );
                     closeCreateValuationEventModal();
                   }}

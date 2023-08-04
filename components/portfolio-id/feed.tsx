@@ -1,28 +1,140 @@
 import { TicketIcon, ChartBarIcon } from '@heroicons/react/20/solid';
 import { format } from 'date-fns';
-
 import { Company } from '../../lib/types';
 import { formatCurrency } from '../../lib/utils';
+import prisma from '../../lib/prisma';
 
-const Feed = ({ company }: { company: Company }) => {
-  const feed = [
-    {
-      id: '2',
-      type: 'new-price-per-share',
-      date: new Date('2023-03-10').toISOString(),
-      pricePerShare: 15,
-      blendedValue: 45000,
-      investmentName: 'Hexa Seed',
+type FeedItemBase<T extends FeedItemType> = {
+    type: T;
+    date: Date;
+  };
+
+
+type FeedItemType = 'new-price-per-share' | 'new-investment';
+
+interface InvestmentFeedItemData  {
+  id: string;
+  amountInvested: number;
+  investmentVehicle: string;
+  investmentName: string;
+}
+
+interface ValuationEventFeedItemData {  
+  id: string;
+  pricePerShare: number;
+  blendedValue: number;
+  investmentName: string;
+}
+
+
+type FeedItemData<T extends FeedItemType> = T extends 'new-price-per-share'
+  ? ValuationEventFeedItemData
+  : T extends 'new-investment'
+  ? InvestmentFeedItemData
+  : never;
+
+type FeedItem<T extends FeedItemType> = FeedItemBase<T> & FeedItemData<T>
+
+const createFeedItem = <T extends FeedItemType>(type: T, date: Date, data: FeedItemData<T> ): FeedItem<T> => {
+  return {
+    type,
+    date,
+    ...data,
+  };
+}
+
+const createFeed = async ( company: Company ): Promise<FeedItem<FeedItemType>[]> => {
+  const feed = []
+  // this prepares for user scoped portfolios, where feed starts at first investment
+  const investments = await prisma.investment.findMany({
+    where: {
+      companyId: company.id
     },
-    {
-      id: '1',
-      type: 'new-investment',
-      date: new Date('2021-06-15').toISOString(),
-      amountInvested: 30000,
-      investmentVehicle: 'Personal vehicle',
-      investmentName: 'Hexa Seed',
+    orderBy: {
+      date: 'asc'
+    }
+  })
+
+  // get valuation events after the first investment
+  const valuationEvents = await prisma.valuationEvent.findMany({
+    where: {
+      companyId: company.id,
+      date: {
+        gte: investments[0].date
+      }
     },
-  ];
+    orderBy: {
+      date: 'asc'
+    } 
+  })
+
+  let investmentPointer = 0
+  let valuationEventPointer = 0
+  let totalShares = 0
+
+  // NB: this approach is overkill here as working with valuation events is enough, but it makes it more future proof 
+  // (ie. add user scoped portfolios, add other types of events, etc.)
+  while(investmentPointer < investments.length || valuationEventPointer < valuationEvents.length) {
+    const investment = investments[investmentPointer]
+    const valuationEvent = valuationEvents[valuationEventPointer]
+
+    // Push first investment
+    if (feed.length === 0) {
+      feed.push(createFeedItem('new-investment', investment.date, {
+        amountInvested: Number(investment.amount),
+        investmentVehicle: "Personal vehicle",
+        investmentName: "Hexa Seed",
+        id: investment.id
+      }))
+      
+      investmentPointer++
+      continue
+    }
+
+    // Skip valuation linked to first investment
+    if (valuationEventPointer === 0 && valuationEvent.numberOfShares) {
+      totalShares += Number(valuationEvent.numberOfShares)
+      valuationEventPointer++
+      continue
+    }
+
+    if (investment?.date <= valuationEvent?.date) {
+      feed.push(createFeedItem('new-investment', investment.date, {
+        amountInvested: Number(investment.amount),
+        investmentVehicle: "Personal vehicle",
+        investmentName: "Hexa Seed",
+        id: investment.id
+      }))
+      investmentPointer++
+      continue
+    }
+
+    // all valuation events after the first investment/valuation are treated as new price per share events
+    if (!investment || investment?.date >= valuationEvent?.date){
+
+      // check if valuation event brings new shares (linked to investment)
+      if (valuationEvent.numberOfShares) {
+        totalShares += Number(valuationEvent.numberOfShares)
+      }
+
+      const blendedValueToPoint = Number(valuationEvent.pricePerShare) * totalShares
+      feed.push(createFeedItem('new-price-per-share', valuationEvent.date, {
+        pricePerShare: Number(valuationEvent.pricePerShare),
+        blendedValue: blendedValueToPoint,
+        investmentName: "Hexa Seed",
+        id: valuationEvent.id
+      }))
+      valuationEventPointer++
+      continue
+    } 
+  }
+
+  // yeah this is lazy, but makes it easier to understand the feed building logic
+  return feed.reverse()
+}
+
+const Feed = async ({ company }: { company: Company }) => {
+  const feed = await createFeed(company)
   return (
     <div className="mt-8 flow-root">
       <ul role="list" className="-mb-8">
@@ -71,7 +183,7 @@ const Feed = ({ company }: { company: Company }) => {
                                 New price per share
                               </dt>
                               <dd className="text-lg font-semibold tracking-tight text-gray-900">
-                                {formatCurrency(feedItem.pricePerShare as number)}
+                              {formatCurrency((feedItem as FeedItem<'new-price-per-share'>).pricePerShare)}
                               </dd>
                             </div>
                             <div>
@@ -79,7 +191,7 @@ const Feed = ({ company }: { company: Company }) => {
                                 New blended value for {feedItem.investmentName}
                               </dt>
                               <dd className="text-lg font-semibold tracking-tight text-gray-900">
-                                {formatCurrency(feedItem.blendedValue as number)}
+                              {formatCurrency((feedItem as FeedItem<'new-price-per-share'>).blendedValue)}
                               </dd>
                             </div>
                           </>
@@ -89,13 +201,13 @@ const Feed = ({ company }: { company: Company }) => {
                             <div>
                               <dt className="text-sm font-medium text-gray-500">Amount invested</dt>
                               <dd className="text-lg font-semibold tracking-tight text-gray-900">
-                                {formatCurrency(feedItem.amountInvested as number)}
+                              {formatCurrency((feedItem as FeedItem<'new-investment'>).amountInvested)}
                               </dd>
                             </div>
                             <div>
                               <dt className="text-sm font-medium text-gray-500">Invested via</dt>
                               <dd className="text-lg font-semibold tracking-tight text-gray-900">
-                                {feedItem.investmentVehicle}
+                                {(feedItem as FeedItem<'new-investment'>).investmentVehicle}
                               </dd>
                             </div>
                           </>

@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation';
 
-import { companies, investments as investmentsSeed } from '../../lib/data';
-import { Company } from '../../lib/types';
 import Banner from './banner';
 import Heading from './heading';
 import HeadingDescription from './heading-description';
@@ -10,17 +8,22 @@ import EventFilter from './event-filter';
 import CreateValuationEventButton from './create-valuation-event-button';
 import Feed from './feed';
 import CreateValuationEventModal from './create-valuation-event-modal';
+import { calculateBlendedValue, calculateTotalInvested } from '../../lib/utils';
+import { fetchCompanyWithInvestmentsAndValuationEvents } from '../../lib/queries';
+import { Company } from '../../lib/types';
 
-const PortfolioId = ({ id }: { id: string }) => {
-  const company = companies.find((c) => c.id === id) as Company;
-  if (!company) {
+
+
+const PortfolioId = async ({ id }: { id: string }) => {
+  const company = await fetchCompanyWithInvestmentsAndValuationEvents(id) as Company
+
+  if (!company || !company.investments) {
     notFound();
-  }
-  const investments = investmentsSeed.filter(({ companyId }) => companyId === id);
-  const amountInvested = investments.reduce<number>(
-    (result, investment) => result + Number(investment.amount),
-    0,
-  );
+  } 
+  
+  const investments = company.investments;
+  const amountInvested = calculateTotalInvested(investments);
+  const blendedValue = await calculateBlendedValue(investments);
   return (
     <div className="relative">
       <Banner company={company} />
@@ -36,7 +39,7 @@ const PortfolioId = ({ id }: { id: string }) => {
           <div>
             <HeadingStats
               amountInvested={amountInvested}
-              blendedValue={45000} /* unrealizedValue={0} */
+              blendedValue={blendedValue} 
             />
           </div>
         </div>

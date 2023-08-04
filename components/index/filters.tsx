@@ -1,9 +1,8 @@
 'use client';
 import { groupBy, sortBy } from 'lodash';
 import { getYear } from 'date-fns';
-
-import { Investment } from '../../lib/types';
 import useContext from '../lib/context/hook';
+import { InvestmentWithCompanyAndValuationEvents } from '../../lib/queries';
 
 const CheckboxFilter = ({
   filter: { id, name, count },
@@ -39,7 +38,7 @@ const CheckboxFilter = ({
   </div>
 );
 
-const Filters = ({ investments }: { investments: Investment[] }) => {
+const Filters = ({ investments }: { investments: InvestmentWithCompanyAndValuationEvents[] }) => {
   const { setCompanyFilter, setYearFilter } = useContext();
   const investmentsByCompany = groupBy(investments, 'companyId');
   const companiesFilters = Object.keys(investmentsByCompany).map((companyId) => ({

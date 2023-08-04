@@ -18,7 +18,7 @@ const HeadingStats = ({
     </div>
     <div className="overflow-hidden rounded-lg bg-white p-3 shadow">
       <dt className="truncate text-sm font-medium text-gray-500">Blended value</dt>
-      <dd className="mt-1 text-lg font-semibold tracking-tight text-green-700">
+      <dd className={`mt-1 text-lg font-semibold tracking-tight ${blendedValue >= amountInvested ? "text-green-700" : "text-red-700" } `} >
         {formatCurrency(blendedValue)}
       </dd>
     </div>
