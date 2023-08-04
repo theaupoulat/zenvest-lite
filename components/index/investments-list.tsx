@@ -17,6 +17,7 @@ const InvestmentCard = async ({
   const blendedValue = await calculateBlendedValue(investments as Investment[]);
   const multiple = blendedValue / amountInvested;
   const multipleColor = multiple >= 1 ? "green" : "red"
+  const ringColor = multiple >= 1 ? "ring-green-600/20" : "ring-red-600/20"
   return (
     <Link href={`/portfolio/${company.id}`}>
       <li className="overflow-hidden rounded-xl border border-gray-200 bg-white">
@@ -45,7 +46,7 @@ const InvestmentCard = async ({
           <div className="flex justify-between gap-x-4 py-3">
             <dt className="text-gray-500">Blended value</dt>
             <dd className="text-gray-700">
-              <div className={`rounded-md bg-${multipleColor}-50 px-2 py-1 text-xs font-medium text-${multipleColor}-700 ring-1 ring-inset ring-${multipleColor}-600/20`}>
+              <div className={`rounded-md bg-${multipleColor}-50 px-2 py-1 text-xs font-medium text-${multipleColor}-700 ring-1 ring-inset ` + ringColor}>
                 {formatCurrency(blendedValue)} ({multiple.toFixed(1)})
               </div>
             </dd>
