@@ -40,14 +40,14 @@ export const companies: Company[] = [
 export const investments: Investment[] = [
   {
     id: '1',
-    date: new Date('2021-06-15').toISOString(),
+    date: new Date('2021-06-15'),
     amount: '30000.00',
     companyId: companies[1].id,
     company: companies[1],
     valuationEvents: [
       {
         id: '1',
-        date: new Date('2021-06-15').toISOString(),
+        date: new Date('2021-06-15'),
         numberOfShares: '3000',
         pricePerShare: '10.00',
       },
@@ -55,14 +55,14 @@ export const investments: Investment[] = [
   },
   {
     id: '2',
-    date: new Date('2022-10-20').toISOString(),
+    date: new Date('2022-10-20'),
     amount: '15000.00',
     companyId: companies[0].id,
     company: companies[0],
     valuationEvents: [
       {
         id: '2',
-        date: new Date('2022-10-20').toISOString(),
+        date: new Date('2022-10-20'),
         numberOfShares: '3000',
         pricePerShare: '5.00',
       },
@@ -70,14 +70,14 @@ export const investments: Investment[] = [
   },
   {
     id: '3',
-    date: new Date('2023-03-05').toISOString(),
+    date: new Date('2023-03-05'),
     amount: '5000.00',
     companyId: companies[4].id,
     company: companies[4],
     valuationEvents: [
       {
         id: '3',
-        date: new Date('2023-03-05').toISOString(),
+        date: new Date('2023-03-05'),
         numberOfShares: '2500',
         pricePerShare: '20.00',
       },
@@ -85,14 +85,14 @@ export const investments: Investment[] = [
   },
   {
     id: '4',
-    date: new Date('2023-07-30').toISOString(),
+    date: new Date('2023-07-30'),
     amount: '5000',
     companyId: companies[0].id,
     company: companies[0],
     valuationEvents: [
       {
         id: '4',
-        date: new Date('2023-07-30').toISOString(),
+        date: new Date('2023-07-30'),
         numberOfShares: '500',
         pricePerShare: '10.00',
       },
