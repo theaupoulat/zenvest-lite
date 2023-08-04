@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import useContext from '../lib/context/hook';
 import { Company } from '../../lib/types';
 import { createValuationEvent } from '../../lib/actions';
+import { useRouter } from 'next/navigation';
 
 const CreateValuationEventModal = ({ company }: { company: Company }) => {
   const {
@@ -15,6 +16,7 @@ const CreateValuationEventModal = ({ company }: { company: Company }) => {
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | null>(null);
+  const router = useRouter();
   return (
     <Transition.Root show={createValuationEventModalOpen} as={Fragment}>
       <Dialog
@@ -80,6 +82,7 @@ const CreateValuationEventModal = ({ company }: { company: Company }) => {
                     startTransition(async () => {
                       try {
                         await createValuationEvent(new FormData(event.target as HTMLFormElement), company.id)
+                        router.refresh();
                         closeCreateValuationEventModal();
                       } catch (error: any) {
                         setFormError(error?.message)

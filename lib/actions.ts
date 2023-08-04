@@ -8,13 +8,13 @@ import {
 
 export const createInvestment = async (formData: FormData) => {
   try {
-    console.log(formData);
     const newInvestment = validateAndBuildCreateInvestmentObject(formData);
     await prisma.investment.create({ data: newInvestment });
-    revalidatePath('/');
   } catch (e) {
     throw e;
   }
+  revalidatePath('/');
+  //revalidatePath('/portfolio/[id]');
 };
 
 export const createValuationEvent = async (formData: FormData, companyId: string) => {
@@ -24,7 +24,6 @@ export const createValuationEvent = async (formData: FormData, companyId: string
   } catch (error) {
     throw error;
   }
-
   // FIXME: Not working, uses cached data
   revalidatePath('/');
 };

@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import useContext from '../lib/context/hook';
 import { createInvestment } from '../../lib/actions';
 import { Company } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 const CreateInvestmentModal = ({ companies }: { companies: Company[] }) => {
   const {
@@ -15,6 +16,7 @@ const CreateInvestmentModal = ({ companies }: { companies: Company[] }) => {
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | null>(null);
+  const router = useRouter();
   return (
     <Transition.Root show={createInvestmentModalOpen} as={Fragment}>
       <Dialog
@@ -77,7 +79,8 @@ const CreateInvestmentModal = ({ companies }: { companies: Company[] }) => {
                       try {
                         await createInvestment(
                           new FormData(event.target as HTMLFormElement),
-                        ).catch();
+                        )
+                        router.refresh();
                         closeCreateInvestmentModal();
                       } catch (error: any) {
                         // FIXME: This is a hack to get the error message shown (only error that can be thrown while submitting form)
