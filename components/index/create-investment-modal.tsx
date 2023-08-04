@@ -80,7 +80,7 @@ const CreateInvestmentModal = ({ companies }: { companies: Company[] }) => {
                         ).catch();
                         closeCreateInvestmentModal();
                       } catch (error: any) {
-                        if(error?.message?.includes('Price per share multiplied by the number of shares should match how much you invested'))
+                        // FIXME: This is a hack to get the error message shown (only error that can be thrown while submitting form)
                         setFormError('Price per share multiplied by the number of shares should match how much you invested');
                       }
                     });
