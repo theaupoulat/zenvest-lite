@@ -80,7 +80,8 @@ const CreateInvestmentModal = ({ companies }: { companies: Company[] }) => {
                         ).catch();
                         closeCreateInvestmentModal();
                       } catch (error: any) {
-                        setFormError(error.message);
+                        if(error?.message?.includes('Price per share multiplied by the number of shares should match how much you invested'))
+                        setFormError('Price per share multiplied by the number of shares should match how much you invested');
                       }
                     });
                   }}
